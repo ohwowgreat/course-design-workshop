@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Design in an Age of Algorithmic Attention</title>
+<style>
+  :root {
+    --blk: #2C2C3A;
+    --cream: #F7F4EF;
+    --orange: #9B6B47;
+    --gray: #7C7C8C;
+    --slate: #3D3D50;
+    --slatebd: #4A4A5E;
+    --ltbg: #EDE8E0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    color: var(--blk);
+    line-height: 1.5;
+    font-size: 15px;
+  }
+  .narrow-bold {
+    font-family: "Arial Narrow", "Helvetica Neue Condensed Bold", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+  }
+  .label {
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  /* HEADER */
+  header {
+    background: var(--blk);
+    color: var(--cream);
+    padding: 60px 40px 80px;
+    position: relative;
+    border-left: 8px solid var(--orange);
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  header .label {
+    color: var(--orange);
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  header .subtitle {
+    font-size: 17px;
+    color: var(--cream);
+    opacity: 0.75;
+    max-width: 640px;
+    line-height: 1.5;
+  }
+  header .meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+  header .meta-item .label {
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  header .meta-item .val {
+    font-size: 15px;
+    color: var(--cream);
+  }
+  /* SECTION */
+  section {
+    padding: 80px 40px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  section.full {
+    max-width: none;
+    background: var(--ltbg);
+  }
+  section.full .section-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  section.dark {
+    background: var(--blk);
+    color: var(--cream);
+    max-width: none;
+  }
+  section.dark .section-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-label {
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+  section.dark .section-label {
+    color: var(--orange);
+  }
+  h2 {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.1;
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+  }
+  h3 {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  p { margin-bottom: 16px; max-width: 720px; }
+  p.lead {
+    font-size: 17px;
+    line-height: 1.55;
+    max-width: 720px;
+  }
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    header h1 { font-size: 36px; }
+    h2 { font-size: 28px; }
+    section, section.dark .section-inner { padding: 50px 24px; }
+    header { padding: 40px 24px 60px; }
+  }
+  /* CARD */
+  .card {
+    background: var(--cream);
+    padding: 28px 24px;
+    border-top: 3px solid var(--blk);
+    display: flex;
+    flex-direction: column;
+  }
+  section.full .card {
+    background: var(--cream);
+  }
+  .card .num {
+    color: var(--orange);
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .card h3 { margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--slate); margin-bottom: 16px; flex: 1; }
+  .card .card-link {
+    color: var(--blk);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--orange);
+    padding-bottom: 2px;
+    align-self: flex-start;
+    transition: color 0.15s;
+  }
+  .card .card-link:hover { color: var(--orange); }
+  /* DARK CARD */
+  section.dark .card {
+    background: var(--slate);
+    border-top: 3px solid var(--orange);
+  }
+  section.dark .card p { color: var(--cream); opacity: 0.7; }
+  section.dark .card .card-link { color: var(--cream); }
+  section.dark .card .card-link:hover { color: var(--orange); }
+  /* DEMO TILE */
+  .demo-tile {
+    background: var(--cream);
+    border: 1px solid var(--blk);
+    padding: 24px;
+    transition: background 0.15s;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--blk);
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+  }
+  .demo-tile:hover {
+    background: var(--blk);
+    color: var(--cream);
+  }
+  .demo-tile .label {
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .demo-tile h3 { margin-bottom: 8px; }
+  .demo-tile p { font-size: 13px; margin-bottom: 16px; flex: 1; }
+  .demo-tile .arrow {
+    align-self: flex-end;
+    font-size: 24px;
+  }
+  /* PLATFORM TABLE */
+  .platform-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    background: var(--cream);
+  }
+  .platform-table th {
+    background: var(--blk);
+    color: var(--cream);
+    padding: 14px 16px;
+    text-align: left;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .platform-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--ltbg);
+    vertical-align: top;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .platform-table .name {
+    font-weight: 700;
+    color: var(--blk);
+    width: 140px;
+  }
+  .platform-table tr:last-child td { border-bottom: none; }
+  /* CODE BLOCK */
+  pre.code-block {
+    background: var(--blk);
+    color: var(--cream);
+    padding: 28px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border-left: 4px solid var(--orange);
+    margin: 24px 0;
+    white-space: pre-wrap;
+  }
+  pre.code-block .var {
+    color: var(--orange);
+    font-weight: 700;
+  }
+  .copy-btn {
+    background: var(--orange);
+    color: var(--cream);
+    border: none;
+    padding: 10px 18px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: var(--blk); }
+  .copy-btn.copied { background: #4a8a5c; }
+  /* QR / FOOTER */
+  footer {
+    background: var(--blk);
+    color: var(--cream);
+    padding: 60px 40px;
+    text-align: center;
+  }
+  footer .label {
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+  footer h3 {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  footer .url {
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    color: var(--cream);
+    opacity: 0.6;
+  }
+  /* PRINCIPLE LIST */
+  .principle {
+    display: flex;
+    gap: 32px;
+    padding: 28px 0;
+    border-top: 1px solid var(--ltbg);
+  }
+  .principle:last-child { border-bottom: 1px solid var(--ltbg); }
+  .principle .num {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 42px;
+    color: var(--orange);
+    line-height: 1;
+    min-width: 60px;
+  }
+  .principle .body h3 { margin-bottom: 8px; }
+  .principle .body p { font-size: 14px; color: var(--slate); margin: 0; }
+  /* CALLOUT */
+  .callout {
+    background: var(--blk);
+    color: var(--cream);
+    padding: 32px;
+    border-left: 4px solid var(--orange);
+    margin: 32px 0;
+  }
+  .callout p { color: var(--cream); margin-bottom: 0; font-size: 15px; }
+  .callout .label {
+    color: var(--orange);
+    margin-bottom: 12px;
+    display: block;
+  }
+  a { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="label">Workshop Companion · 2026</div>
+    <h1>Course Design in an Age of Algorithmic Attention</h1>
+    <p class="subtitle">A practical companion for teachers building single-file lesson microsites with AI tools. Use this page during the workshop and afterwards.</p>
+    <div class="meta">
+      <div class="meta-item">
+        <div class="label">Facilitator</div>
+        <div class="val">Doğan</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Format</div>
+        <div class="val">Hands-on, 60 min</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Tools</div>
+        <div class="val">Claude · ChatGPT · Gemini · DeepSeek</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- THREE THINGS YOU NEED -->
+<section>
+  <div class="label section-label">Section 01</div>
+  <h2>Three things you need today</h2>
+  <p class="lead">Open these three tabs before we begin. Everything else flows through this page.</p>
+  <div class="grid-3" style="margin-top: 32px;">
+    <div class="card">
+      <div class="num">01</div>
+      <h3>An AI tool</h3>
+      <p>Any of Claude, ChatGPT, Gemini, or DeepSeek will work. A free account is enough.</p>
+      <a class="card-link" href="#platforms">Compare →</a>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <h3>A text editor</h3>
+      <p>Notepad on Windows or TextEdit on Mac. Or VS Code if you prefer.</p>
+      <a class="card-link" href="#save">Save guide →</a>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <h3>A lesson topic</h3>
+      <p>One concept you teach where students typically lose focus or struggle.</p>
+      <a class="card-link" href="#prompt">Prompt template →</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="full">
+  <div class="section-inner" style="padding: 80px 40px;">
+    <div class="label section-label">Section 02</div>
+    <h2>The argument, briefly</h2>
+    <p class="lead">Students spend hours each day inside interfaces designed by recommendation systems. Attention is shaped by algorithmic feedback rather than by sustained reading. The lesson, in its traditional form, competes with this structure.</p>
+    <p class="lead">A lesson microsite is not a replacement. It is a different surface where attention can be designed deliberately, on a single page, for a specific learning moment.</p>
+    <div class="callout">
+      <span class="label">Frame</span>
+      <p>The interface is not the lesson. It is the place where the lesson meets the student. Treat it as a designed object.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEMOS -->
+<section id="demos">
+  <div class="label section-label">Section 03</div>
+  <h2>Two tools from my classroom</h2>
+  <p class="lead">Both used with students. Both built using the workflow you will learn today. Plus a prompt builder so you can make your own.</p>
+  <div class="grid-3" style="margin-top: 40px;">
+    <a class="demo-tile" href="https://close-reader.dogan-arslanoglu.workers.dev/" target="_blank" rel="noopener">
+      <div class="label">Collaborative · Any text</div>
+      <h3>Close Reader</h3>
+      <p>A live annotation room. Teacher publishes a text; students join by room code and tag passages as confusing, interesting, important. Highlights appear in real time.</p>
+      <span class="arrow">→</span>
+    </a>
+    <a class="demo-tile" href="https://constellation-board-six.vercel.app/" target="_blank" rel="noopener">
+      <div class="label">Image thinking · Any subject</div>
+      <h3>Constellation Board</h3>
+      <p>A drag-and-drop image canvas. Students arrange, label, and reorder visual material to make relationships visible. Multiple boards, export to JSON or PDF.</p>
+      <span class="arrow">→</span>
+    </a>
+    <a class="demo-tile" href="prompt-builder.html">
+      <div class="label">Build your own</div>
+      <h3>Prompt Builder</h3>
+      <p>Click activity chips and toggle options. The prompt assembles in real time. Copy and paste into any AI tool to generate your own learning interface.</p>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- PROMPT -->
+<section class="dark" id="prompt">
+  <div class="section-inner">
+    <div class="label section-label">Section 04</div>
+    <h2>The prompt structure</h2>
+    <p class="lead" style="color: var(--cream); opacity: 0.8;">This is the structure that produces a working single-file microsite across all four AI tools. Fill in the bracketed parts.</p>
+
+    <pre class="code-block" id="prompt-text">Build a single self-contained HTML file with inline CSS and JavaScript.
+No external libraries. No fetches. No build step.
+
+SUBJECT: <span class="var">[your subject, e.g. Year 10 Biology]</span>
+TOPIC: <span class="var">[one specific concept, e.g. osmosis in plant cells]</span>
+LEARNING GOAL: <span class="var">[what students should be able to do after, in one sentence]</span>
+
+ACTIVITY TYPE: <span class="var">[choose one: ranking, sorting, matching, hotspot,</span>
+<span class="var">timeline, comparison, scenario decision, drag-and-drop, quiz with feedback]</span>
+
+CONTENT: <span class="var">[paste your lesson notes, key facts, or examples here.</span>
+<span class="var">Aim for 100 to 300 words of source material.]</span>
+
+INTERACTION RULES:
+- Students complete the activity in 5 to 8 minutes
+- Each interaction gives immediate, specific feedback
+- Include a final reflection prompt that asks students to write 2 to 3 sentences
+
+DESIGN:
+- Clean, distraction-free, no animations beyond essential feedback
+- Works on phone and laptop
+- Single column on mobile, two column on desktop where useful
+- Use system fonts only
+
+OUTPUT: A complete .html file I can save and open in a browser.
+Wrap the entire file in one code block.</pre>
+
+    <button class="copy-btn" onclick="copyPrompt()">Copy prompt</button>
+  </div>
+</section>
+
+<!-- SAVE -->
+<section id="save">
+  <div class="label section-label">Section 05</div>
+  <h2 id="platforms">Saving your file across platforms</h2>
+  <p class="lead">Each AI tool returns code in a slightly different way. Use the steps below for your tool.</p>
+
+  <table class="platform-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>How to save</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="name">Claude</td>
+        <td>Claude returns HTML as an Artifact panel on the right. Click the download icon at the top of the panel. The file saves directly as .html. No copy-paste needed.</td>
+      </tr>
+      <tr>
+        <td class="name">ChatGPT</td>
+        <td>Code appears in a code block with a Copy button at the top right. Click Copy. Open Notepad (Windows) or TextEdit (Mac, in Plain Text mode). Paste. Save as <code>lesson.html</code> with All Files / Plain Text encoding.</td>
+      </tr>
+      <tr>
+        <td class="name">Gemini</td>
+        <td>Code appears in a code block. Click the copy icon. Paste into Notepad or TextEdit (Plain Text). Save as <code>lesson.html</code>. If Gemini splits the file across multiple blocks, ask: "Combine everything into one HTML file in a single code block."</td>
+      </tr>
+      <tr>
+        <td class="name">DeepSeek</td>
+        <td>Code appears in a code block with a copy icon at the top right. Click Copy. Paste into Notepad or TextEdit (Plain Text mode). Save as <code>lesson.html</code>. DeepSeek occasionally adds explanatory text inside the code block; remove anything that is not HTML before saving.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="label">Mac users</span>
+    <p>TextEdit defaults to Rich Text Format, which will break your file. Before pasting, go to Format menu → Make Plain Text. When saving, untick "If no extension is provided, use .txt".</p>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="full">
+  <div class="section-inner" style="padding: 80px 40px;">
+    <div class="label section-label">Section 06</div>
+    <h2>Five principles to keep in mind</h2>
+
+    <div class="principle">
+      <div class="num">01</div>
+      <div class="body">
+        <h3>The interface is not the lesson</h3>
+        <p>The microsite is a surface for one learning moment. It is not a textbook, not a course, not a replacement for teaching.</p>
+      </div>
+    </div>
+    <div class="principle">
+      <div class="num">02</div>
+      <div class="body">
+        <h3>One concept per file</h3>
+        <p>If you have three learning objectives, build three files. A microsite that tries to do everything ends up doing nothing well.</p>
+      </div>
+    </div>
+    <div class="principle">
+      <div class="num">03</div>
+      <div class="body">
+        <h3>Feedback is the activity</h3>
+        <p>What students learn happens in the response to their click, not in the click itself. Spend most of your prompt describing what the feedback should say.</p>
+      </div>
+    </div>
+    <div class="principle">
+      <div class="num">04</div>
+      <div class="body">
+        <h3>Test it on a phone</h3>
+        <p>If it does not work on a phone, half your students cannot use it. Open every file on your phone before you assign it.</p>
+      </div>
+    </div>
+    <div class="principle">
+      <div class="num">05</div>
+      <div class="body">
+        <h3>Iterate with students</h3>
+        <p>The first version is rarely the right one. Run it in class, watch what confuses students, refine the prompt, regenerate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AFTER -->
+<section class="dark">
+  <div class="section-inner">
+    <div class="label section-label">Section 07</div>
+    <h2>After the workshop</h2>
+    <p class="lead" style="color: var(--cream); opacity: 0.8;">Three things to do this week to keep the practice alive.</p>
+    <div class="grid-3" style="margin-top: 40px;">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>Build one for next week's lesson</h3>
+        <p>Pick a lesson you are already planning. Build a microsite for the part where students usually drift.</p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>Show a colleague</h3>
+        <p>Walk one colleague through the prompt structure. Teaching it once embeds it in your own practice.</p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>Keep a folder</h3>
+        <p>Save every working file in one folder named "lesson microsites". After a term you will have a library.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="label">This page</div>
+  <h3>Bookmark or scan to return</h3>
+  <div class="url" id="footer-url">[microsite URL will appear here]</div>
+</footer>
+
+<script>
+  document.getElementById('footer-url').textContent = window.location.href.split('#')[0];
+
+  function copyPrompt() {
+    const promptEl = document.getElementById('prompt-text');
+    const text = promptEl.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy prompt';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

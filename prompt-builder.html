@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Builder · Workshop</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #F7F4EF;
+    color: #2C2C3A;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  header {
+    border-bottom: 2px solid #2C2C3A;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .crumb {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9B6B47;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .back {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #2C2C3A;
+    text-decoration: none;
+    border-bottom: 1px solid #9B6B47;
+  }
+  .intro {
+    background: #EDE8E0;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    border-left: 4px solid #2C2C3A;
+    font-size: 14px;
+  }
+  .form-row {
+    margin-bottom: 24px;
+  }
+  .form-row label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9B6B47;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .form-row input, .form-row textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #2C2C3A;
+    background: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .form-row textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  h2 {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-stretch: condensed;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 40px 0 16px;
+  }
+  .activity-cats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 720px) {
+    .activity-cats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .activity-cats { grid-template-columns: 1fr; }
+  }
+  .chip {
+    padding: 14px 12px;
+    background: #fff;
+    border: 1px solid #2C2C3A;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    text-align: center;
+  }
+  .chip:hover { background: #EDE8E0; }
+  .chip.selected {
+    background: #2C2C3A;
+    color: #F7F4EF;
+    border-color: #9B6B47;
+  }
+  .chip-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #9B6B47;
+    margin-bottom: 4px;
+    display: block;
+    font-weight: 700;
+  }
+  .chip.selected .chip-label { color: #9B6B47; }
+  .chip-title { font-weight: 700; }
+
+  .toggles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .toggles { grid-template-columns: 1fr; }
+  }
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #2C2C3A;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .toggle input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  .output {
+    margin-top: 40px;
+    background: #2C2C3A;
+    color: #F7F4EF;
+    padding: 28px;
+    border-left: 4px solid #9B6B47;
+  }
+  .output-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #9B6B47;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  pre.output-text {
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #F7F4EF;
+    margin-bottom: 20px;
+  }
+  .copy-btn {
+    background: #9B6B47;
+    color: #F7F4EF;
+    border: none;
+    padding: 12px 20px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #F7F4EF; color: #2C2C3A; }
+  .copy-btn.copied { background: #4a8a5c; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="crumb">Live Demo · Build Your Own</div>
+    <h1>Prompt Builder</h1>
+    <a class="back" href="index.html">← back to workshop hub</a>
+  </header>
+
+  <div class="intro">
+    Fill in the fields below. Pick one activity type. Toggle the options you want. The prompt assembles in real time at the bottom. Copy it and paste into any AI tool.
+  </div>
+
+  <div class="form-row">
+    <label>Subject and year</label>
+    <input id="subject" placeholder="e.g. Year 9 History, Grade 11 Biology" oninput="update()" value="Year 10 History">
+  </div>
+
+  <div class="form-row">
+    <label>One specific topic</label>
+    <input id="topic" placeholder="e.g. causes of World War One, photosynthesis" oninput="update()" value="the causes of the French Revolution">
+  </div>
+
+  <div class="form-row">
+    <label>Learning goal · one sentence</label>
+    <input id="goal" placeholder="e.g. Students can distinguish long-term causes from triggers" oninput="update()" value="Students can distinguish economic, political, and social causes">
+  </div>
+
+  <div class="form-row">
+    <label>Source content · paste lesson notes or key facts</label>
+    <textarea id="content" placeholder="Paste 100 to 300 words of lesson material here" oninput="update()">The French Revolution had multiple intersecting causes. Economic: state bankruptcy from American war debt, poor harvests in 1788. Political: Louis XVI's weak leadership, the failure of Assembly of Notables. Social: rigid Three Estates system, growing bourgeoisie resentment, Enlightenment ideas circulating widely.</textarea>
+  </div>
+
+  <h2>Activity type</h2>
+  <div class="activity-cats" id="activity-cats"></div>
+
+  <h2>Options</h2>
+  <div class="toggles">
+    <label class="toggle"><input type="checkbox" id="opt-mobile" checked onchange="update()"> Works on phone</label>
+    <label class="toggle"><input type="checkbox" id="opt-feedback" checked onchange="update()"> Immediate feedback after each answer</label>
+    <label class="toggle"><input type="checkbox" id="opt-reflection" checked onchange="update()"> Final reflection prompt</label>
+    <label class="toggle"><input type="checkbox" id="opt-timer" onchange="update()"> Add a timer or time pressure</label>
+    <label class="toggle"><input type="checkbox" id="opt-progress" checked onchange="update()"> Show progress as students go</label>
+    <label class="toggle"><input type="checkbox" id="opt-print" onchange="update()"> Printable version included</label>
+  </div>
+
+  <div class="output">
+    <div class="output-label">Your assembled prompt</div>
+    <pre class="output-text" id="output"></pre>
+    <button class="copy-btn" onclick="copy()">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+  const activities = [
+    {id: 'ranking', label: 'Compare', title: 'Forced ranking', detail: 'Students put items in order by some criterion. Good for showing what matters most.'},
+    {id: 'sorting', label: 'Compare', title: 'Sort into categories', detail: 'Students drag items into two or more buckets. Good for typology and classification.'},
+    {id: 'matching', label: 'Connect', title: 'Match pairs', detail: 'Students match terms to definitions, causes to effects, etc.'},
+    {id: 'hotspot', label: 'Examine', title: 'Image hotspots', detail: 'Students click parts of an image to reveal information. Good for visual analysis.'},
+    {id: 'timeline', label: 'Sequence', title: 'Timeline ordering', detail: 'Students place events in chronological order.'},
+    {id: 'scenario', label: 'Decide', title: 'Scenario decision', detail: 'Students face a choice and see consequences. Good for ethics and reasoning.'},
+    {id: 'quiz', label: 'Recall', title: 'Quiz with feedback', detail: 'Multiple choice or short answer with explanations.'},
+    {id: 'hookskip', label: 'Decide', title: 'Hook or Skip', detail: 'Students see options and decide quickly. Good for media analysis.'},
+    {id: 'comparison', label: 'Compare', title: 'Side-by-side comparison', detail: 'Two columns. Students choose which is more accurate, ethical, effective, etc.'}
+  ];
+
+  let selectedActivity = 'ranking';
+
+  function renderActivities() {
+    const c = document.getElementById('activity-cats');
+    c.innerHTML = '';
+    activities.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'chip' + (selectedActivity === a.id ? ' selected' : '');
+      div.innerHTML = `<span class="chip-label">${a.label}</span><span class="chip-title">${a.title}</span>`;
+      div.onclick = () => { selectedActivity = a.id; renderActivities(); update(); };
+      c.appendChild(div);
+    });
+  }
+
+  function update() {
+    const subject = document.getElementById('subject').value || '[subject]';
+    const topic = document.getElementById('topic').value || '[topic]';
+    const goal = document.getElementById('goal').value || '[goal]';
+    const content = document.getElementById('content').value || '[paste content here]';
+    const activity = activities.find(a => a.id === selectedActivity);
+
+    const opts = {
+      mobile: document.getElementById('opt-mobile').checked,
+      feedback: document.getElementById('opt-feedback').checked,
+      reflection: document.getElementById('opt-reflection').checked,
+      timer: document.getElementById('opt-timer').checked,
+      progress: document.getElementById('opt-progress').checked,
+      print: document.getElementById('opt-print').checked
+    };
+
+    let prompt = `Build a single self-contained HTML file with inline CSS and JavaScript.
+No external libraries. No fetches. No build step.
+
+SUBJECT: ${subject}
+TOPIC: ${topic}
+LEARNING GOAL: ${goal}
+
+ACTIVITY TYPE: ${activity.title}
+${activity.detail}
+
+CONTENT:
+${content}
+
+INTERACTION RULES:`;
+
+    if (opts.feedback) prompt += `\n- Give immediate, specific feedback after each student action`;
+    if (opts.progress) prompt += `\n- Show progress visually as students go through the activity`;
+    if (opts.timer) prompt += `\n- Add a visible timer that creates appropriate time pressure`;
+    if (opts.reflection) prompt += `\n- End with a reflection prompt asking students to write 2 to 3 sentences`;
+
+    prompt += `\n\nDESIGN:`;
+    prompt += `\n- Clean, distraction-free, no decorative animations`;
+    if (opts.mobile) prompt += `\n- Must work cleanly on a phone (single column on mobile)`;
+    prompt += `\n- System fonts only`;
+    if (opts.print) prompt += `\n- Include a print stylesheet so students can save a PDF of their answers`;
+
+    prompt += `\n\nOUTPUT: Complete .html file in one code block. Nothing else.`;
+
+    document.getElementById('output').textContent = prompt;
+  }
+
+  function copy() {
+    const text = document.getElementById('output').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy prompt';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  renderActivities();
+  update();
+</script>
+</body>
+</html>

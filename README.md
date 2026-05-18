@@ -1,2 +1,37 @@
-# course-design-workshop
-Course Design in an Age of Algorithmic Attention
+# Course Design in an Age of Algorithmic Attention
+
+Workshop companion site for the BNDS Insights 2026 miniworkshop, adapted for use at other schools.
+
+## What's here
+
+- `index.html` — Workshop hub page
+- `hook-or-skip.html` — Media Studies live demo
+- `le-chatelier.html` — Chemistry live demo
+- `prompt-builder.html` — Drag-and-drop prompt builder
+
+All files are single-page HTML with inline CSS and JavaScript. No build step.
+
+## Deploy to Vercel
+
+1. Push this folder to a GitHub repo
+2. Import the repo into Vercel
+3. Framework Preset: **Other**
+4. Build Command: (leave empty)
+5. Output Directory: (leave empty, root)
+6. Deploy
+
+Vercel will serve `index.html` automatically.
+
+## Local preview
+
+Open `index.html` directly in a browser, or run:
+
+```
+python3 -m http.server 8000
+```
+
+Then visit `http://localhost:8000`.
+
+## Facilitator
+
+Doğan · BNDS, Beijing
