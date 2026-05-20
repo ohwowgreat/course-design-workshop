@@ -215,12 +215,21 @@
   </div>
 
   <div class="form-row">
+    <label>Existing lesson plan (optional)</label>
+    <textarea id="lesson-plan" placeholder="Paste an existing lesson plan if you have one — objectives, activities, assessment. The builder will use this instead of the source content field." oninput="update()"></textarea>
+  </div>
+
+  <div class="form-row">
     <label>Source content · paste lesson notes or key facts</label>
     <textarea id="content" placeholder="Paste 100 to 300 words of lesson material here" oninput="update()">The French Revolution had multiple intersecting causes. Economic: state bankruptcy from American war debt, poor harvests in 1788. Political: Louis XVI's weak leadership, the failure of Assembly of Notables. Social: rigid Three Estates system, growing bourgeoisie resentment, Enlightenment ideas circulating widely.</textarea>
   </div>
 
   <h2>Activity type</h2>
   <div class="activity-cats" id="activity-cats"></div>
+  <div id="custom-activity-row" class="form-row" style="display:none; margin-top:4px;">
+    <label>Describe the activity type</label>
+    <input id="custom-activity" placeholder="e.g. Jigsaw group activity, Socratic seminar" oninput="update()">
+  </div>
 
   <h2>Options</h2>
   <div class="toggles">
@@ -249,7 +258,8 @@
     {id: 'scenario', label: 'Decide', title: 'Scenario decision', detail: 'Students face a choice and see consequences. Good for ethics and reasoning.'},
     {id: 'quiz', label: 'Recall', title: 'Quiz with feedback', detail: 'Multiple choice or short answer with explanations.'},
     {id: 'hookskip', label: 'Decide', title: 'Hook or Skip', detail: 'Students see options and decide quickly. Good for media analysis.'},
-    {id: 'comparison', label: 'Compare', title: 'Side-by-side comparison', detail: 'Two columns. Students choose which is more accurate, ethical, effective, etc.'}
+    {id: 'comparison', label: 'Compare', title: 'Side-by-side comparison', detail: 'Two columns. Students choose which is more accurate, ethical, effective, etc.'},
+    {id: 'other', label: 'Custom', title: 'Other', detail: ''}
   ];
 
   let selectedActivity = 'ranking';
@@ -264,14 +274,22 @@
       div.onclick = () => { selectedActivity = a.id; renderActivities(); update(); };
       c.appendChild(div);
     });
+    document.getElementById('custom-activity-row').style.display = selectedActivity === 'other' ? '' : 'none';
   }
 
   function update() {
     const subject = document.getElementById('subject').value || '[subject]';
     const topic = document.getElementById('topic').value || '[topic]';
     const goal = document.getElementById('goal').value || '[goal]';
-    const content = document.getElementById('content').value || '[paste content here]';
+    const content = document.getElementById('content').value;
+    const lessonPlan = document.getElementById('lesson-plan').value.trim();
     const activity = activities.find(a => a.id === selectedActivity);
+    const customActivity = document.getElementById('custom-activity').value.trim();
+
+    const activityTypeName = selectedActivity === 'other'
+      ? (customActivity || '[describe activity type]')
+      : activity.title;
+    const activityDetail = selectedActivity === 'other' ? '' : activity.detail;
 
     const opts = {
       mobile: document.getElementById('opt-mobile').checked,
@@ -282,6 +300,14 @@
       print: document.getElementById('opt-print').checked
     };
 
+    let contentBlock;
+    if (lessonPlan) {
+      contentBlock = `\n\nEXISTING LESSON PLAN:\n${lessonPlan}`;
+      if (content.trim()) contentBlock += `\n\nSUPPLEMENTARY CONTENT:\n${content}`;
+    } else {
+      contentBlock = `\n\nCONTENT:\n${content || '[paste content here]'}`;
+    }
+
     let prompt = `Build a single self-contained HTML file with inline CSS and JavaScript.
 No external libraries. No fetches. No build step.
 
@@ -289,11 +315,7 @@ SUBJECT: ${subject}
 TOPIC: ${topic}
 LEARNING GOAL: ${goal}
 
-ACTIVITY TYPE: ${activity.title}
-${activity.detail}
-
-CONTENT:
-${content}
+ACTIVITY TYPE: ${activityTypeName}${activityDetail ? '\n' + activityDetail : ''}${contentBlock}
 
 INTERACTION RULES:`;
 
